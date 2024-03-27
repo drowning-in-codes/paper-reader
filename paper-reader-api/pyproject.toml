@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "paper-reader-api"
+version = "0.1.0"
+description = ""
+authors = ["proanimer <bukalala174@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.0.2"
+requests = "^2.31.0"
+pytest = "^8.1.1"
+black = "^24.3.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
