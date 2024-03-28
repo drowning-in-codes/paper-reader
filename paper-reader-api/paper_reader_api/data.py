@@ -45,7 +45,6 @@ class PaperData:
             self.__dict__,
             default=lambda o: o.__dict__,
             ensure_ascii=False,
-            encoding="utf-8",
             skipkeys=True,
         )
 
