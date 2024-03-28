@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png')}}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static',filename='favicon.ico') }}">
+     <link rel="stylesheet"  type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
+    <link rel="stylesheet"  type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>出错了</title>
+</head>
+<body>
+<h1>Error!出错了~</h1>
+{% if e %}
+<p class="error-msg">
+    {{ e }}
+</p>
+{% else %}
+<p class="error-msg">出错了,你是不是输入了负数?</p>
+{% endif %}
+</body>
+</html>

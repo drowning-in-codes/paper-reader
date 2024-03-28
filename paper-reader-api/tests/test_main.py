@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from flask import jsonify
 from typing import Optional
 from paper_reader_api.data import MetaData, AuthorData, PaperData, PaperDataList
+from enum import Enum
 
 
 def test_get_papers():
@@ -21,3 +22,12 @@ def test_get_papers():
     )
     pdatalist.papers.append(pdata)
     print(pdatalist.to_json())
+
+
+def test_enum():
+    class SortBy(Enum):
+        """sort by field"""
+
+        RELEVANCE = 3
+
+    print(SortBy.RELEVANCE == 3)

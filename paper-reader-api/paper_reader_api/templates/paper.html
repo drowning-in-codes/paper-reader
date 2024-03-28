@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>论文查</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename=' favicon.png')}}">
-  <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png')}}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet"  type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
-    <link rel="stylesheet"  type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="stylesheet"  type="text/css" href="../static/styles.css">
-
    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" >
+    <link rel="stylesheet"  type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='loading.js') }}"></script>
 </head>
 <body>
 <div class="container">
@@ -21,24 +20,43 @@
     <p class="display-content">返回结果 {{metadata.items}}</p>
 </section>
     <section class="pure-u-11-24">
-       <form class="pure-form" action="/paper/result">
+       <form class="pure-form" action="/{{ root_url }}/result">
     <fieldset class="fieldset">
         <legend>继续搜论文</legend>
-        <div class="pure-control-group bt-10">
+        <div class="search_box">
              <label for="topic">主题</label>
-        <input type="text" placeholder="computer science" name="topic" value="computer science" id="topic">
-        </div>
-        <div class="pure-control-group bt-10">
+        <input class="pure-input-rounded" type="text" placeholder="computer science" name="topic" value="computer science" id="topic">
+
            <label for="max_result">查询个数</label>
-        <input type="number" placeholder="10" name="max_result" value="10" id="max_result">
+        <input class="pure-input-rounded" type="number" placeholder="10" name="max_result" value="10" id="max_result">
         </div>
-        <button type="submit" class="button-55">搜索</button>
+        <div class="search_box">
+        <div class="pure-u-2-5 select_box">
+         <label for="sort_by">按</label>
+                <select id="sort_by" name="sort_by">
+                    <option value="relevance">相似性</option>
+                    <option value="lastUpdatedDate">上次更新时间</option>
+                    <option value="submittedDate">初次提交时间</option>
+                </select>
+<span>查找</span>
+</div>
+        <div class="pure-u-2-5 select_box">
+   <label for="sort_order">顺序</label>
+                <select id="sort_order" name="sort_order">
+                    <option value="descending">降序</option>
+                    <option value="ascending">升序</option>
+                </select>
+            </div>
+            </div>
+        <div class="btn-box">
+        <button type="submit" class="button-55" onclick="loading()">搜索</button>
+        </div>
     </fieldset>
 </form>
     </section>
         </div>
-
-<section class="detail_paper">
+<div class="lds-hourglass" id="loading"></div>
+<section class="detail_paper" id="detail_paper">
     <ul class="list-component">
     {% for item in paperdata %}
     <li>

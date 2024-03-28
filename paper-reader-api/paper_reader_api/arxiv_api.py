@@ -1,9 +1,29 @@
 from datetime import datetime
 from typing import Optional
-from .data import MetaData, AuthorData, PaperData, PaperDataList
 import requests
 import xml
 import xml.etree.ElementTree as ET
+
+try:
+    from data import MetaData, AuthorData, PaperData, PaperDataList, SortBy, SortOrder
+except:
+    from paper_reader_api.data import (
+        MetaData,
+        AuthorData,
+        PaperData,
+        PaperDataList,
+        SortBy,
+        SortOrder,
+    )
+
+
+def trans_time(time_str: str) -> str:
+    if time_str[-1] == "Z":
+        dt = datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%SZ")
+    else:
+        dt = datetime.fromisoformat(time_str)
+    # 将时间对象格式化为人类可读格式
+    return dt.strftime("%Y年%m月%d日 %H:%M:%S")
 
 
 def parse_xml(xml_str: str) -> tuple[MetaData, PaperDataList]:
@@ -14,10 +34,7 @@ def parse_xml(xml_str: str) -> tuple[MetaData, PaperDataList]:
         "arxiv": "http://arxiv.org/schemas/atom",
     }
     updated_time = root.find("atom:updated", namespaces).text
-    # 解析时间字符串为datetime对象
-    dt = datetime.fromisoformat(updated_time)
-    # 将时间对象格式化为人类可读格式
-    formatted_time = dt.strftime("%Y年%m月%d日 %H:%M:%S")
+    formatted_time = trans_time(updated_time)
     total_result = root.find("meta:totalResults", namespaces).text
     items = root.find("meta:itemsPerPage", namespaces).text
     mdata = MetaData(
@@ -27,15 +44,15 @@ def parse_xml(xml_str: str) -> tuple[MetaData, PaperDataList]:
     )
     pdatalist = PaperDataList(papers=[])
     for entry in root.findall("atom:entry", namespaces):
+        # 文章id
         paper_id = entry.find("atom:id", namespaces).text
+        # 更新时间
         updated = entry.find("atom:updated", namespaces).text
-        dt = datetime.fromisoformat(updated)
-        # 将时间对象格式化为人类可读格式
-        updated = dt.strftime("%Y年%m月%d日 %H:%M:%S")
+        updated = trans_time(updated)
+        # 发布时间
         published = entry.find("atom:published", namespaces).text
-        dt = datetime.fromisoformat(published)
-        # 将时间对象格式化为人类可读格式
-        published = dt.strftime("%Y年%m月%d日 %H:%M:%S")
+        published = trans_time(published)
+        # 标题
         title = entry.find("atom:title", namespaces).text
         summary = entry.find("atom:summary", namespaces).text
         author_name = (
@@ -72,13 +89,6 @@ def parse_xml(xml_str: str) -> tuple[MetaData, PaperDataList]:
 
 
 class ArxivParser:
-    Ascending = "ascending"
-    Descending = "descending"
-
-    Relevance = "relevance"
-    LastUpdatedDate = "lastUpdatedDate"
-    SubmittedDate = "submittedDate"
-
     def __init__(self, url: Optional[str] = None):
         if url is None:
             self.root_url = "http://export.arxiv.org/api/{method_name}"
@@ -91,6 +101,8 @@ class ArxivParser:
         id_list: Optional[list[str]] = None,
         start: int = 0,
         max_results: int = 10,
+        sort_order: str = SortOrder.DESCENDING.value,
+        sort_by: str = SortBy.RELEVANCE.value,
         # author: Optional[str] = None,
         # abstract: Optional[str] = None,
         # comment: Optional[str] = None,
@@ -105,9 +117,10 @@ class ArxivParser:
             "id_list": id_list,
             "start": start,
             "max_results": max_results,
-            "sortOrder": ArxivParser.Descending,
-            "sortBy": ArxivParser.Relevance,
+            "sortOrder": sort_order,
+            "sortBy": sort_by,
         }
+
         res = requests.get(self.root_url.format(method_name="query"), params=params)
         mdata, pdatalist = parse_xml(res.text)
         return mdata, pdatalist

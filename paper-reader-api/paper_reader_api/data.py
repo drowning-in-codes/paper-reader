@@ -1,6 +1,22 @@
 from typing import Optional
 from dataclasses import dataclass
 import json
+from enum import Enum
+
+
+class SortBy(Enum):
+    """sort by field"""
+
+    RELEVANCE = "relevance"
+    LAST_UPDATED_DATE = "lastUpdatedDate"
+    SUBMITTED_DATE = "submittedDate"
+
+
+class SortOrder(Enum):
+    """sort order"""
+
+    ASCENDING = "ascending"
+    DESCENDING = "descending"
 
 
 @dataclass

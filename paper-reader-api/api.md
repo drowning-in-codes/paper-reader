@@ -61,4 +61,4 @@ The `<category>` element has two attributes, `scheme`, which is the categorizati
 
 links
 
-For each entry, there are up to three `<link>` elements, distinguished by their `rel` and `title` attributes.
+For each entry, there are up to three `<link>` elements, distinguished by their `rel` and `title` attributes
