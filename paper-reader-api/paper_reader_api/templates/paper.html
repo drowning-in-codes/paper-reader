@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>论文查</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename=' favicon.png')}}">
+  <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet"  type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
+    <link rel="stylesheet"  type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet"  type="text/css" href="../static/styles.css">
+
+   <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" >
+</head>
+<body>
+<div class="container">
+    <div class="pure-g header">
+<section class="display-box pure-u-12-24">
+    <p class="display-content">更新时间 {{metadata.updated_time}}</p>
+    <p class="display-content">总共结果 {{metadata.total_result}}</p>
+    <p class="display-content">返回结果 {{metadata.items}}</p>
+</section>
+    <section class="pure-u-11-24">
+       <form class="pure-form" action="/paper/result">
+    <fieldset class="fieldset">
+        <legend>继续搜论文</legend>
+        <div class="pure-control-group bt-10">
+             <label for="topic">主题</label>
+        <input type="text" placeholder="computer science" name="topic" value="computer science" id="topic">
+        </div>
+        <div class="pure-control-group bt-10">
+           <label for="max_result">查询个数</label>
+        <input type="number" placeholder="10" name="max_result" value="10" id="max_result">
+        </div>
+        <button type="submit" class="button-55">搜索</button>
+    </fieldset>
+</form>
+    </section>
+        </div>
+
+<section class="detail_paper">
+    <ul class="list-component">
+    {% for item in paperdata %}
+    <li>
+        <div class="pure-g"><div class="pure-u-3-5"><p>论文标题: <strong>{{item.title}}</strong></p>
+        <p>论文ID: {{item.paper_id}}</p>
+        </div>
+       <div class="pure-u-2-5">
+           <p>论文更新时间: {{item.updated}}</p>
+        <p>论文发布时间: {{item.published}}</p>
+       </div>
+        </div>
+        <div class="pure-g">
+             <p class="pure-u-3-5">作者: {{ item.author.name }}</p>
+        <p class="pure-u-2-5">分类:
+            {% for cat in item.category %}
+            {{ cat }}
+            {% endfor %}
+        </p>
+        </div>
+        <div class="pure-g">
+          {% if item.doi %}
+            <p class="pure-u-2-5">DOI: {{ item.doi }}</p>
+        {% endif %}
+           {% if item.author.affiliation %}
+        <p class="pure-u-3-5">就职: {{ item.author.affiliation }}</p>
+        {% endif %}
+        </div>
+
+        <p>PDF链接: <a href="{{ item.pdf_link}}">{{ item.pdf_link}}</a></p>
+        <p>总结: <span class="strong">{{item.summary}}</span> </p>
+    </li>
+    {% endfor %}
+  </ul>
+
+</section>
+
+</div>
+</body>
+</html>

@@ -29,7 +29,13 @@ def parse_xml(xml_str: str) -> tuple[MetaData, PaperDataList]:
     for entry in root.findall("atom:entry", namespaces):
         paper_id = entry.find("atom:id", namespaces).text
         updated = entry.find("atom:updated", namespaces).text
+        dt = datetime.fromisoformat(updated)
+        # 将时间对象格式化为人类可读格式
+        updated = dt.strftime("%Y年%m月%d日 %H:%M:%S")
         published = entry.find("atom:published", namespaces).text
+        dt = datetime.fromisoformat(published)
+        # 将时间对象格式化为人类可读格式
+        published = dt.strftime("%Y年%m月%d日 %H:%M:%S")
         title = entry.find("atom:title", namespaces).text
         summary = entry.find("atom:summary", namespaces).text
         author_name = (
