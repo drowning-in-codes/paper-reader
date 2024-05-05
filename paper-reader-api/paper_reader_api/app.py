@@ -10,15 +10,16 @@ try:
 except:
     from paper_reader_api.arxiv_api import ArxivParser
 
-
 load_dotenv()
 root_url = os.getenv("ROOT_URL")
 app = Flask(__name__, static_url_path=f"/{root_url}/static")
 
 
 @app.errorhandler(404)
-def resource_not_found(e):
-    return jsonify(error=str(e)), 404
+def page_not_found(e):
+    print(request.url)
+    # note that we set the 404 status explicitly
+    return render_template("404.html", error=str(e)), 404
 
 
 @app.errorhandler(Exception)
@@ -87,6 +88,7 @@ def get_page():
     )
     return render_template(
         "paper.html",
+        topic=topic,
         metadata=mdata,
         paperdata=paper_data_list.papers,
         root_url=root_url,

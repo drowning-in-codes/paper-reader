@@ -1,0 +1,20 @@
+# 使用 Python 3.9 作为基础镜像
+FROM python:3.9
+# 设置工作目录
+WORKDIR /app
+
+# 复制应用程序的依赖文件到容器中
+COPY requirements.txt .
+
+# 安装应用程序的依赖
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 复制应用程序代码到容器中
+COPY paper_reader_api/*.py .
+
+# 暴露应用程序的端口
+ENV APP_PORT=9601
+EXPOSE $APP_PORT
+
+# 在容器启动时运行应用程序
+CMD gunicorn -w 4 -b 0.0.0.0:$APP_PORT app:app
